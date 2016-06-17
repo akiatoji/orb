@@ -382,6 +382,9 @@
                 }
 
                 var merged = mergefieldconfigs(fieldconfig, fieldAxeconfig, axeconfig, defaultfieldconfig, rootconfig);
+                
+                console.log(merged);
+                
 
                 return new Field({
                     name: getpropertyvalue('name', merged.configs, ''),

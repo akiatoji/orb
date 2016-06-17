@@ -78,7 +78,7 @@ function createfield(rootconfig, axetype, fieldconfig, defaultfieldconfig) {
 
     var merged = mergefieldconfigs(fieldconfig, fieldAxeconfig, axeconfig, defaultfieldconfig, rootconfig);
 
-    return new Field({
+    var f = new Field({
         name: getpropertyvalue('name', merged.configs, ''),
 
         caption: getpropertyvalue('caption', merged.configs, ''),
@@ -97,6 +97,8 @@ function createfield(rootconfig, axetype, fieldconfig, defaultfieldconfig) {
         aggregateFunc: getpropertyvalue('aggregateFunc', merged.functions, aggregation.sum),
         formatFunc: getpropertyvalue('formatFunc', merged.functions, null)
     }, false);
+
+    return f;
 }
 
 function GrandTotalConfig(options) {
@@ -256,7 +258,8 @@ module.exports.config = function(config) {
 
     this.rowFields = (config.rows || []).map(function(fieldconfig) {
         fieldconfig = ensureFieldConfig(fieldconfig);
-        return createfield(self, axe.Type.ROWS, fieldconfig, getfield(self.allFields, fieldconfig.name));
+        var a =  createfield(self, axe.Type.ROWS, fieldconfig, getfield(self.allFields, fieldconfig.name));
+        return a;
     });
 
     this.columnFields = (config.columns || []).map(function(fieldconfig) {
