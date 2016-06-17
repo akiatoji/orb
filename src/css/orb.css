@@ -12,9 +12,9 @@
     }
 }
 
-.orb-container {
-    overflow: hidden;
-}
+/*.orb-container {*/
+    /*overflow: hidden;*/
+/*}*/
 
 .orb {
     border-spacing: 0;
@@ -49,12 +49,12 @@
         }
     }
 
-    .inner-table-container {
-        overflow-y: hidden;
-        overflow-x: hidden;
-        width: 100%;
-        height: 100%;
-    }
+    /*.inner-table-container {*/
+        /*overflow-y: hidden;*/
+        /*overflow-x: hidden;*/
+        /*width: 100%;*/
+        /*height: 100%;*/
+    /*}*/
 
     /* available fields */    
     .av-flds {

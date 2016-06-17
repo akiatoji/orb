@@ -93,12 +93,16 @@ module.exports.PivotCell = react.createClass({
         var isWrapper = cell.type === uiheaders.HeaderType.WRAPPER && cell.dim.field.subTotal.visible && cell.dim.field.subTotal.collapsible;
         var isSubtotal = cell.type === uiheaders.HeaderType.SUB_TOTAL && !cell.expanded;
         if(isWrapper || isSubtotal) {
+          var formatted_value = cell.value;
+          if (cell.dim.field && cell.dim.field.formatFunc) {
+            formatted_value = cell.dim.field.formatFunc()(cell.value);
+          }
           headerPushed = true;
 
           divcontent.push(<table key="header-value" ref="cellContent">
             <tbody>
             <tr><td className="orb-tgl-btn"><div className={'orb-tgl-btn-' + (isWrapper ? 'down' : 'right')} onClick={(isWrapper ? this.collapse : this.expand)}></div></td>
-            <td className="hdr-val"><div dangerouslySetInnerHTML={{__html: cell.value || '&#160;'}}></div></td></tr>
+            <td className="hdr-val"><div dangerouslySetInnerHTML={{__html: formatted_value || '&#160;'}}></div></td></tr>
             </tbody></table>);
         } else {
           value = (cell.value || '&#160;') + (cell.type === uiheaders.HeaderType.SUB_TOTAL ? ' Total' : '');
@@ -126,6 +130,9 @@ module.exports.PivotCell = react.createClass({
         default:
         if(cell.template != 'cell-template-dataheader' && cell.type !== uiheaders.HeaderType.GRAND_TOTAL) {
           headerClassName = 'hdr-val';
+          if (cell.type !== uiheaders.HeaderType.SUB_TOTAL && cell.dim.field && cell.dim.field.formatFunc) {
+            value = cell.dim.field.formatFunc()(value);
+          }
         }
       }
       divcontent.push(<div key="cell-value" ref="cellContent" className={headerClassName}><div dangerouslySetInnerHTML={{__html: value || '&#160;'}}></div></div>);
@@ -148,18 +155,18 @@ function getClassname(compProps) {
     var isEmpty = cell.template === 'cell-template-empty';
 
     if(!cell.visible()) {
-      classname += ' cell-hidden'; 
+      classname += ' cell-hidden';
     }
 
     if(cell.type === uiheaders.HeaderType.SUB_TOTAL && cell.expanded) {
-      classname += ' header-st-exp'; 
+      classname += ' header-st-exp';
     }
 
     if(cell.type === uiheaders.HeaderType.GRAND_TOTAL) {
       if(cell.dim.depth === 1) {
-        classname += ' header-nofields'; 
+        classname += ' header-nofields';
       } else if(cell.dim.depth > 2) {
-        classname += ' header-gt-exp'; 
+        classname += ' header-gt-exp';
       }
     }
 

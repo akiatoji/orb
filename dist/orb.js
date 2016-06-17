@@ -1,10 +1,10 @@
 /**
- * orb v1.0.9, Pivot grid javascript library.
+ * orb v1.0.9, Pivot table javascript library.
  *
- * Copyright (c) 2014-2015 Najmeddine Nouri <devnajm@gmail.com>.
+ * Copyright (c) 2014-2016 Najmeddine Nouri <devnajm@gmail.com>.
  *
  * @version v1.0.9
- * @link http://nnajm.github.io/orb/
+ * @link http://orbjs.net/
  * @license MIT
  */
 
@@ -3128,7 +3128,6 @@
                     nodes.rowHeadersTable.size = reactUtils.getSize(nodes.rowHeadersTable.node);
 
                     // get row buttons container width
-                    //nodes.rowButtonsContainer.node.style.width = '';
                     var rowButtonsContainerWidth = reactUtils.getSize(nodes.rowButtonsContainer.node.children[0]).width;
 
                     // get array of dataCellsTable column widths
@@ -3154,9 +3153,6 @@
                         nodes.rowHeadersTable.size.width += rowDiff;
                         nodes.rowHeadersTable.widthArray[nodes.rowHeadersTable.widthArray.length - 1] += rowDiff;
                     }
-
-                    //nodes.rowButtonsContainer.node.style.width = (rowHeadersTableWidth + 1) + 'px';
-                    //nodes.rowButtonsContainer.node.style.paddingRight = (rowHeadersTableWidth + 1 - rowButtonsContainerWidth + 17) + 'px';
 
                     // Set dataCellsTable cells widths according to the computed dataCellsTableMaxWidthArray
                     reactUtils.updateTableColGroup(nodes.dataCellsTable.node, dataCellsTableMaxWidthArray);
@@ -3537,7 +3533,6 @@
                 }
             }
 
-
             module.exports.PivotRow = react.createClass({
                 render: function() {
                     var self = this;
@@ -3690,6 +3685,10 @@
                             var isWrapper = cell.type === uiheaders.HeaderType.WRAPPER && cell.dim.field.subTotal.visible && cell.dim.field.subTotal.collapsible;
                             var isSubtotal = cell.type === uiheaders.HeaderType.SUB_TOTAL && !cell.expanded;
                             if (isWrapper || isSubtotal) {
+                                var formatted_value = cell.value;
+                                if (cell.dim.field && cell.dim.field.formatFunc) {
+                                    formatted_value = cell.dim.field.formatFunc()(cell.value);
+                                }
                                 headerPushed = true;
 
                                 divcontent.push(React.createElement("table", {
@@ -3707,7 +3706,7 @@
                                                 className: "hdr-val"
                                             }, React.createElement("div", {
                                                 dangerouslySetInnerHTML: {
-                                                    __html: cell.value || '&#160;'
+                                                    __html: formatted_value || '&#160;'
                                                 }
                                             })))
                                     )));
@@ -3737,6 +3736,9 @@
                             default:
                                 if (cell.template != 'cell-template-dataheader' && cell.type !== uiheaders.HeaderType.GRAND_TOTAL) {
                                     headerClassName = 'hdr-val';
+                                    if (cell.type !== uiheaders.HeaderType.SUB_TOTAL && cell.dim.field && cell.dim.field.formatFunc) {
+                                        value = cell.dim.field.formatFunc()(value);
+                                    }
                                 }
                         }
                         divcontent.push(React.createElement("div", {
@@ -3794,8 +3796,6 @@
 
                 return classname;
             }
-
-
 
             var dragManager = module.exports.DragManager = (function() {
 
